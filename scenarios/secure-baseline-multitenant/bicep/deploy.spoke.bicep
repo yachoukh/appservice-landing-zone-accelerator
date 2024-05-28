@@ -21,6 +21,9 @@ param subnetSpokeDevOpsAddressSpace string
 @description('CIDR of the subnet that will hold the private endpoints of the supporting services')
 param subnetSpokePrivateEndpointAddressSpace string
 
+@description('CIDR of the subnet that will hold the MySQL flexible server instances')
+param subnetSpokeMySQLAddressSpace string
+
 @description('Internal IP of the Azure firewall deployed in Hub. Used for creating UDR to route all vnet egress traffic through Firewall. If empty no UDR')
 param firewallInternalIp string = ''
 
@@ -38,6 +41,9 @@ param deployRedis bool
 
 @description('Deploy (or not) an Azure SQL with default database ')
 param deployAzureSql bool
+
+@description('Deploy (or not) an Azure SQL with default database ')
+param deployAzureMySql bool
 
 @description('Deploy (or not) an Azure app configuration')
 param deployAppConfig bool
@@ -104,6 +110,7 @@ var resourceNames = {
   snetAppSvc: 'snet-appSvc-${naming.virtualNetwork.name}-spoke'
   snetDevOps: 'snet-devOps-${naming.virtualNetwork.name}-spoke'
   snetPe: 'snet-pe-${naming.virtualNetwork.name}-spoke'
+  snetMySQL: 'snet-mysql-${naming.virtualNetwork.name}-spoke'
   pepNsg: take('${naming.networkSecurityGroup.name}-pep', 80)
   aseNsg: take('${naming.networkSecurityGroup.name}-ase', 80)
   appSvcUserAssignedManagedIdentity: take('${naming.userAssignedManagedIdentity.name}-appSvc', 128)
@@ -117,7 +124,9 @@ var resourceNames = {
   vmWindowsJumpbox: take('${naming.windowsVirtualMachine.name}-win-jumpbox', 64)
   redisCache: naming.redisCache.nameUnique
   sqlServer: naming.mssqlServer.nameUnique
+  mySqlServer: naming.mysqlServer.nameUnique
   sqlDb:'sample-db'
+  mysqlDb:'sample-db'
   appConfig: take ('${naming.appConfiguration.nameUnique}-${ take( uniqueString(resourceGroup().id, subscription().id), 6) }', 50)
   frontDoor: naming.frontDoor.name
   frontDoorEndPoint: 'webAppLza-${ take( uniqueString(resourceGroup().id, subscription().id), 6) }'  //globally unique
@@ -181,6 +190,24 @@ var subnets = [
         id: nsgPep.outputs.nsgId
       }  
     }    
+  }
+  {
+    name: resourceNames.snetMySQL
+    properties: {
+      addressPrefix: subnetSpokeMySQLAddressSpace
+      privateEndpointNetworkPolicies: 'Disabled'
+      delegations: [
+        {
+          name: 'delegation'
+          properties: {
+            serviceName: 'Microsoft.DBforMySQL/flexibleServers'
+          }
+        }
+      ]
+      networkSecurityGroup: {
+        id: nsgPep.outputs.nsgId
+      } 
+    } 
   }
 ]
 
@@ -276,6 +303,10 @@ resource snetDevOps 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' exist
 
 resource snetPe 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
   name: '${vnetSpoke.outputs.vnetName}/${resourceNames.snetPe}'
+}
+
+resource snetMySQL 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
+  name: '${vnetSpoke.outputs.vnetName}/${resourceNames.snetMySQL}'
 }
 
 module logAnalyticsWs '../../shared/bicep/log-analytics-ws.bicep' = {
@@ -444,6 +475,19 @@ module sqlServerAndDefaultDb 'modules/sql-database.module.bicep' = if (deployAzu
     sqlAdminPassword: sqlAdminPassword
   }
 }
+
+module mySqlServerAndDefaultDb 'modules/mysql-database.module.bicep' = if (deployAzureMySql) {
+    name: take('${resourceNames.sqlServer}-mysqlServer-Deployment', 64)
+    params: {
+      name: resourceNames.mySqlServer
+      location: location
+      databaseName: resourceNames.mysqlDb
+      subnetId: snetMySQL.id
+      mysqlAdminLogin: sqlAdminLogin
+      mysqlAdminPassword: sqlAdminPassword
+  }
+}
+  
 
 module openAi 'modules/open-ai.module.bicep'= if(deployOpenAi) {
   name: take('${resourceNames.openAiAccount}-openAiModule-Deployment', 64)

@@ -42,6 +42,9 @@ param subnetSpokeDevOpsAddressSpace string = '10.240.10.128/26'
 @description('CIDR of the subnet that will hold the private endpoints of the supporting services')
 param subnetSpokePrivateEndpointAddressSpace string = '10.240.11.0/24'
 
+@description('CIDR of the subnet that will hold the private endpoints of the supporting services')
+param subnetSpokeMySQLAddressSpace string = '10.240.12.0/24'
+
 @description('Optional. A numeric suffix (e.g. "001") to be appended on the naming generated for the resources. Defaults to empty.')
 param numericSuffix string = ''
 
@@ -87,6 +90,9 @@ param deployRedis bool = false
 
 @description('set to true if you want to deploy a azure SQL server and default database')
 param deployAzureSql bool = false
+
+@description('set to true if you want to deploy a azure MySQL server and default database')
+param deployAzureMySql bool = false
 
 @description('set to true if you want to deploy application configuration')
 param deployAppConfig bool = false
@@ -233,6 +239,8 @@ module spoke 'deploy.spoke.bicep' = {
     adoToken: adoToken
     installClis: installClis
     installSsms: installSsms 
+    deployAzureMySql: deployAzureMySql
+    subnetSpokeMySQLAddressSpace: subnetSpokeMySQLAddressSpace
   }
 }
 
