@@ -1,7 +1,13 @@
 @description('name must be max 24 chars, globally unique, all lowercase letters or numbers with no spaces.')
+@maxLength(24)
+@minLength(1)
 param name string
-param location string
-param tags object
+
+@description('Optional. The location to deploy the Redis cache service.')
+param location string = resourceGroup().location
+
+@description('Optional. Tags of the resource.')
+param tags object = {}
 
 @allowed([
   'Storage'
@@ -24,7 +30,7 @@ param kind string = 'StorageV2'
   'Standard_RAGZRS'
 ])
 @description('Optional. Storage Account Sku Name.')
-param sku string = 'Standard_GRS'
+param sku string = 'Standard_LRS'
 
 @allowed([
   'Hot'
@@ -37,6 +43,9 @@ param accessTier string = 'Hot'
 param supportsHttpsTrafficOnly bool = true
 
 param networkAcls object = {}
+
+@description('Optional. File share name.')
+param fileShareName string = 'share'
 
 // Variables
 var maxNameLength = 24
@@ -57,11 +66,23 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
     accessTier: accessTier
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
     networkAcls: networkAcls
+    publicNetworkAccess: 'Disabled'
   }  
 }
 
-output id string = storage.id
+resource fileService 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01' = {
+  parent: storage
+  name: 'default'
+}
+
+resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-04-01' = {
+  parent: fileService
+  name: fileShareName
+}
+
+output resourceId string = storage.id
 output name string = storage.name
-output apiVersion string = storage.apiVersion
+output location string = storage.location
+output resourceGroup string = resourceGroup().name
 // output primaryKey string = listKeys(storage.id, storage.apiVersion).keys[0].value
 // output connectionString string = 'DefaultEndpointsProtocol=https;AccountName=${storage.name};AccountKey=${listKeys(storage.id, storage.apiVersion).keys[0].value}'
