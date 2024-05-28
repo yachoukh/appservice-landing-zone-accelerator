@@ -161,7 +161,7 @@ module webApp '../../../shared/bicep/app-services/web-app.bicep' = {
     diagnosticWorkspaceId: logAnalyticsWsId   
     virtualNetworkSubnetId: !(deployAseV3)  ? subnetIdForVnetInjection  : ''                              // no
     appInsightId: appInsights.outputs.appInsResourceId
-    siteConfigSelection:  (webAppBaseOs =~ 'linux') ? 'linuxNet6' : 'windowsNet6'
+    siteConfigSelection:  (webAppBaseOs =~ 'linux') ? 'linuxPhp8' : 'windowsNet6'
     hasPrivateLink: !(deployAseV3)  ? (!empty (subnetPrivateEndpointId))    : false                           // no
     systemAssignedIdentity: false
     userAssignedIdentities:  {
