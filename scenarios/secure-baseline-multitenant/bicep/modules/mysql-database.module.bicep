@@ -31,6 +31,8 @@ module mySqlDbAndServer '../../../shared/bicep/databases/mysql.bicep' = {
     administratorLoginPassword: mysqlAdminPassword
     databaseName: databaseName
     name: name
+    location: location
     subnetId: subnetId
+    tags: tags
   }
 }
