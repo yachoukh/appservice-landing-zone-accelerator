@@ -69,6 +69,8 @@ param deployAppConfig bool
 
 var vnetHubSplitTokens = !empty(vnetHubResourceId) ? split(vnetHubResourceId, '/') : array('')
 
+var privateDnsZoneRg = 'eu-LISA-PP-privatedns'
+
 var webAppDnsZoneName = 'privatelink.azurewebsites.net'
 var appConfigurationDnsZoneName = 'privatelink.azconfig.io'
 var slotName = 'staging'
@@ -210,7 +212,7 @@ module webAppUserAssignedManagedIdenity '../../../shared/bicep/managed-identity.
 module webAppPrivateDnsZone '../../../shared/bicep/private-dns-zone.bicep' = if ( !empty(subnetPrivateEndpointId) && !deployAseV3 ) {
   // conditional scope is not working: https://github.com/Azure/bicep/issues/7367
   //scope: empty(vnetHubResourceId) ? resourceGroup() : resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4]) 
-  scope: resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4])
+  scope: resourceGroup(vnetHubSplitTokens[2], privateDnsZoneRg)
   name: take('${replace(webAppDnsZoneName, '.', '-')}-PrivateDnsZoneDeployment', 64)
   params: {
     name: webAppDnsZoneName

@@ -31,6 +31,8 @@ var vnetHubSplitTokens = !empty(vnetHubResourceId) ? split(vnetHubResourceId, '/
 
 var filesDnsZoneName = 'privatelink.file.core.windows.net'
 
+var privateDnsZoneRg = 'eu-LISA-PP-privatedns'
+
 module storage '../../../shared/bicep/storage/storage.bicep' = {
   name: take('${name}-storageAccount-deployment', 64)
   params: {
@@ -46,7 +48,7 @@ module storage '../../../shared/bicep/storage/storage.bicep' = {
 module filesPrivateDnsZone '../../../shared/bicep/private-dns-zone.bicep' = if ( !empty(subnetPrivateEndpointId) ) {
   // condiotional scope is not working: https://github.com/Azure/bicep/issues/7367
   //scope: empty(vnetHubResourceId) ? resourceGroup() : resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4]) 
-  scope: resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4])
+  scope: resourceGroup(vnetHubSplitTokens[2], privateDnsZoneRg)
   name: take('${replace(filesDnsZoneName, '.', '-')}-PrivateDnsZoneDeployment', 64)
   params: {
     name: filesDnsZoneName
