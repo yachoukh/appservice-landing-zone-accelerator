@@ -217,11 +217,6 @@ var virtualNetworkLinks = [
     vnetId: vnetSpoke.outputs.vnetId
     registrationEnabled: false
   }
-  {
-    vnetName: vnetHub.name
-    vnetId: vnetHub.id
-    registrationEnabled: false
-  }
 ]
 
 var vnetHubSplitTokens = !empty(vnetHubResourceId) ? split(vnetHubResourceId, '/') : array('')
