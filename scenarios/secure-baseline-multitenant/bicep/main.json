@@ -1,0 +1,123 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workloadName": {
+      "value": "drupeuliza"
+    },
+    "location": {
+      "value": "swedencentral"
+    },
+    "environmentName": {
+      "value": "test"
+    },
+    "deployAseV3": {
+      "value": false
+    },
+    "vnetHubAddressSpace": {
+      "value": "10.242.0.0/20"
+    },
+    "subnetHubFirewallAddressSpace": {
+      "value": "10.242.0.0/26"
+    },
+    "subnetHubFirewallManagementAddressSpace": {
+      "value": "10.242.0.64/26"
+    },
+    "subnetHubBastionAddressSpace": {
+      "value": "10.242.0.128/26"
+    },
+    "vnetSpokeAddressSpace": {
+      "value": "10.240.0.0/20"
+    },
+    "subnetSpokeAppSvcAddressSpace": {
+      "value": "10.240.0.0/26"
+    },
+    "subnetSpokeDevOpsAddressSpace": {
+      "value": "10.240.10.128/26"
+    },
+    "subnetSpokePrivateEndpointAddressSpace": {
+      "value": "10.240.11.0/24"
+    },
+    "subnetSpokeMySQLAddressSpace": {
+      "value": "10.240.12.0/24"
+    },
+    "numericSuffix": {
+      "value": ""
+    },
+    "resourceTags": {
+      "value": {}
+    },
+    "vnetHubResourceId": {
+      "value": ""
+    },
+    "firewallInternalIp": {
+      "value": ""
+    },
+    "webAppPlanSku": {
+      "value": "P1V3"
+    },
+    "webAppBaseOs": {
+      "value": "Linux"
+    },
+    "adminUsername": {
+      "value": "azureuser"
+    },
+    "adminPassword": {
+      "value": "Y1o9u9$1s1091"
+    },
+    "sqlServerAdministrators": {
+      "value": {}
+    },
+    "sqlAdminLogin": {
+      "value": "sqluser"
+    },
+    "sqlAdminPassword": {
+      "value": "Y1o9u9$1s1091"
+    },
+    "enableEgressLockdown": {
+      "value": true
+    },
+    "deployRedis": {
+      "value": false
+    },
+    "deployAzureSql": {
+      "value": false
+    },
+    "deployAzureMySql": {
+      "value": true
+    },
+    "deployAppConfig": {
+      "value": false
+    },
+    "deployJumpHost": {
+      "value": true
+    },
+    "deployOpenAi": {
+      "value": false
+    },
+    "deployOpenAiGptModel": {
+      "value": false
+    },
+    "githubRepository": {
+      "value": ""
+    },
+    "githubToken": {
+      "value": ""
+    },
+    "adoOrganization": {
+      "value": ""
+    },
+    "adoToken": {
+      "value": ""
+    },
+    "installClis": {
+      "value": false
+    },
+    "installSsms": {
+      "value": false
+    },
+    "autoApproveAfdPrivateEndpoint": {
+      "value": true
+    }
+  }
+}

@@ -14,6 +14,22 @@ param location string
 @description('Optional. Tags of the resource.')
 param tags object = {}
 
+@description('The name of an existing keyvault, that it will be used to store secrets (connection string)' )
+param keyvaultName string
+
+@description('An existing Log Analytics WS Id for creating app Insights, diagnostics etc.')
+param logAnalyticsWsId string
+
+@description('if empty, private dns zone will be deployed in the current RG scope')
+param vnetHubResourceId string
+
+@description('Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain vnetName, vnetId, registrationEnabled')
+param virtualNetworkLinks array = []
+
+var vnetHubSplitTokens = !empty(vnetHubResourceId) ? split(vnetHubResourceId, '/') : array('')
+
+var mysqlDnsZoneName = 'privatelink.mysql.database.azure.com'
+
 @description('Conditional. If sqlServerAdministrators is given, this is not required')
 param mysqlAdminLogin string
 
@@ -24,15 +40,31 @@ param mysqlAdminPassword string
 @description('Provide Subnet ID')
 param subnetId string
 
-module mySqlDbAndServer '../../../shared/bicep/databases/mysql.bicep' = {
-  name: take('mysqlDbAndServer-${name}-Deployment', 64)
+module mysqlPrivateDnsZone '../../../shared/bicep/private-dns-zone.bicep' = {
+  // condiotional scope is not working: https://github.com/Azure/bicep/issues/7367
+  //scope: empty(vnetHubResourceId) ? resourceGroup() : resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4]) 
+  scope: resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4])
+  name: take('${replace(mysqlDnsZoneName, '.', '-')}-PrivateDnsZoneDeployment', 64)
   params: {
-    administratorLogin: mysqlAdminLogin
-    administratorLoginPassword: mysqlAdminPassword
-    databaseName: databaseName
-    name: name
-    location: location
-    subnetId: subnetId
+    name: mysqlDnsZoneName
+    virtualNetworkLinks: virtualNetworkLinks
     tags: tags
   }
 }
+
+module mySqlDbAndServer '../../../shared/bicep/databases/mysql.bicep' = {
+  name: take('mysqlDbAndServer-${name}-Deployment', 64)
+  params: {
+    name: name
+    location: location
+    tags: tags
+    subnetId: subnetId
+    administratorLogin: mysqlAdminLogin
+    administratorLoginPassword: mysqlAdminPassword
+    databaseName: databaseName
+    privateDnsZoneResourceId: mysqlPrivateDnsZone.outputs.privateDnsZonesId
+  }
+}
+
+
+

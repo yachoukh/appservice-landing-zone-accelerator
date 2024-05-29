@@ -477,14 +477,33 @@ module sqlServerAndDefaultDb 'modules/sql-database.module.bicep' = if (deployAzu
 }
 
 module mySqlServerAndDefaultDb 'modules/mysql-database.module.bicep' = if (deployAzureMySql) {
-    name: take('${resourceNames.sqlServer}-mysqlServer-Deployment', 64)
+    name: take('${resourceNames.mySqlServer}-mysqlServer-Deployment', 64)
     params: {
       name: resourceNames.mySqlServer
       location: location
+      tags: tags
+      logAnalyticsWsId: logAnalyticsWs.outputs.logAnalyticsWsId  
+      vnetHubResourceId: vnetHubResourceId
+      virtualNetworkLinks: virtualNetworkLinks
+      keyvaultName: keyvault.outputs.keyvaultName
       databaseName: resourceNames.mysqlDb
       subnetId: snetMySQL.id
       mysqlAdminLogin: sqlAdminLogin
       mysqlAdminPassword: sqlAdminPassword
+  }
+}
+
+module fileShare 'modules/storage.module.bicep' = {
+  name: take('${resourceNames.storageAccount}-storage-Deployment', 64)
+  params: {
+    name: resourceNames.storageAccount
+    location: location
+    tags: tags
+    logAnalyticsWsId: logAnalyticsWs.outputs.logAnalyticsWsId  
+    vnetHubResourceId: vnetHubResourceId
+    subnetPrivateEndpointId: snetPe.id
+    virtualNetworkLinks: virtualNetworkLinks
+    keyvaultName: keyvault.outputs.keyvaultName
   }
 }
   

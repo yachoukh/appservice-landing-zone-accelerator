@@ -67,6 +67,8 @@ param backupRetentionDays int = 7
 ])
 param geoRedundantBackup string = 'Disabled'
 
+param privateDnsZoneResourceId string = ''
+
 
 resource mysqlServer 'Microsoft.DBforMySQL/flexibleServers@2021-12-01-preview' = {
   location: location
@@ -92,6 +94,7 @@ resource mysqlServer 'Microsoft.DBforMySQL/flexibleServers@2021-12-01-preview' =
     }
     network: {
       delegatedSubnetResourceId: subnetId
+      privateDnsZoneResourceId: privateDnsZoneResourceId
     }
     backup: {
       backupRetentionDays: backupRetentionDays

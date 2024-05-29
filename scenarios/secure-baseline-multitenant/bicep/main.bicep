@@ -159,7 +159,7 @@ var administrators = empty (sqlServerAdministrators) || (sqlServerAdministrators
                                                                   }, sqlServerAdministrators)
 
 // 'Telemetry is by default enabled. The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services.
-var enableTelemetry = true                                                                  
+var enableTelemetry = false                                                                 
 
 // ================ //
 // Resources        //

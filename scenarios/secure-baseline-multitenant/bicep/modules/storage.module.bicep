@@ -1,4 +1,4 @@
-@description('Required. The name of the Redis cache resource. Start and end with alphanumeric. Consecutive hyphens not allowed')
+@description('Required. The name of the storage account resource. Start and end with alphanumeric. Consecutive hyphens not allowed')
 @maxLength(24)
 @minLength(1)
 param name string
@@ -56,9 +56,9 @@ module filesPrivateDnsZone '../../../shared/bicep/private-dns-zone.bicep' = if (
 }
 
 module peFiles '../../../shared/bicep/private-endpoint.bicep' = if ( !empty(subnetPrivateEndpointId) ) {
-  name: take('pe-${name}-Deployment', 64)
+  name: take('pe-sa-${name}-Deployment', 64)
   params: {
-    name: take('pe-${storage.outputs.name}', 64)
+    name: take('pe-sa-${storage.outputs.name}', 64)
     location: location
     tags: tags
     privateDnsZonesId: filesPrivateDnsZone.outputs.privateDnsZonesId
@@ -78,6 +78,6 @@ output name string = storage.outputs.name
 @description('The resource ID.')
 output resourceId string = storage.outputs.resourceId
 
-@description('The name of the resource group the Redis cache was created in.')
+@description('The name of the resource group the storage account was created in.')
 output resourceGroupName string = resourceGroup().name
 
