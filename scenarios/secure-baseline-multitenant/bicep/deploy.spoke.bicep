@@ -104,6 +104,9 @@ param sqlAdminPassword string = ''
 @description('set to true if you want to auto approve the Private Endpoint of the AFD')
 param autoApproveAfdPrivateEndpoint bool = true
 
+@description('The name of the existing VNET Hub Private DNS Zone Resource Group')
+param privateDnsZoneRg string = ''
+
 var resourceNames = {
   storageAccount: naming.storageAccount.nameUnique
   vnetSpoke: take('${naming.virtualNetwork.name}-spoke', 80)
@@ -211,7 +214,7 @@ var subnets = [
   }
 ]
 
-var virtualNetworkLinks = [
+var virtualNetworkLinks =  [
   {
     vnetName: vnetSpoke.outputs.vnetName
     vnetId: vnetSpoke.outputs.vnetId
@@ -319,7 +322,8 @@ module keyvault 'modules/keyvault.module.bicep' = {
     name: resourceNames.keyvault
     location: location
     tags: tags   
-    vnetHubResourceId: vnetHubResourceId    
+    vnetHubResourceId: vnetHubResourceId
+    privateDnsZoneRg: privateDnsZoneRg    
     subnetPrivateEndpointId: snetPe.id
     virtualNetworkLinks: virtualNetworkLinks
   }
@@ -338,6 +342,7 @@ module webApp 'modules/app-service.module.bicep' = {
     subnetIdForVnetInjection: snetAppSvc.id
     tags: tags
     vnetHubResourceId: vnetHubResourceId
+    privateDnsZoneRg: privateDnsZoneRg
     webAppBaseOs: webAppBaseOs
     subnetPrivateEndpointId: snetPe.id
     virtualNetworkLinks: virtualNetworkLinks   
@@ -479,6 +484,7 @@ module mySqlServerAndDefaultDb 'modules/mysql-database.module.bicep' = if (deplo
       tags: tags
       logAnalyticsWsId: logAnalyticsWs.outputs.logAnalyticsWsId  
       vnetHubResourceId: vnetHubResourceId
+      privateDnsZoneRg: privateDnsZoneRg
       virtualNetworkLinks: virtualNetworkLinks
       keyvaultName: keyvault.outputs.keyvaultName
       databaseName: resourceNames.mysqlDb
@@ -496,6 +502,7 @@ module fileShare 'modules/storage.module.bicep' = {
     tags: tags
     logAnalyticsWsId: logAnalyticsWs.outputs.logAnalyticsWsId  
     vnetHubResourceId: vnetHubResourceId
+    privateDnsZoneRg: privateDnsZoneRg
     subnetPrivateEndpointId: snetPe.id
     virtualNetworkLinks: virtualNetworkLinks
     keyvaultName: keyvault.outputs.keyvaultName

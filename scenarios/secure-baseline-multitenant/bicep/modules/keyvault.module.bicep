@@ -17,11 +17,12 @@ param subnetPrivateEndpointId string = ''
 @description('if empty, private dns zone will be deployed in the current RG scope')
 param vnetHubResourceId string
 
+@description('The name of the existing VNET Hub Private DNS Zone Resource Group')
+param privateDnsZoneRg string = ''
+
 var vnetHubSplitTokens = !empty(vnetHubResourceId) ? split(vnetHubResourceId, '/') : array('')
 
 var keyvaultDnsZoneName = 'privatelink.vaultcore.azure.net'
-
-var privateDnsZoneRg = 'eu-LISA-PP-privatedns'
 
 module keyvault '../../../shared/bicep/keyvault.bicep' = {
   name: 'keyvaultDeployment'
@@ -37,7 +38,7 @@ module keyvault '../../../shared/bicep/keyvault.bicep' = {
 module keyvaultPrivateDnsZone '../../../shared/bicep/private-dns-zone.bicep' = if ( !empty(subnetPrivateEndpointId) ) {
     // conditional scope is not working: https://github.com/Azure/bicep/issues/7367 but workaround: https://github.com/Azure/bicep/issues/10419#issuecomment-1507708535
   //scope: empty(vnetHubResourceId) ? resourceGroup() : resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4]) 
-  scope: resourceGroup(vnetHubSplitTokens[2], privateDnsZoneRg)
+  scope: resourceGroup(vnetHubSplitTokens[2], !empty(privateDnsZoneRg) ? privateDnsZoneRg : vnetHubSplitTokens[4])
   name: 'keyvaultPrivateDnsZoneDeployment'
   params: {
     name: keyvaultDnsZoneName

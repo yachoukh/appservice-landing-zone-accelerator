@@ -128,6 +128,8 @@ param installSsms bool = false
 @description('set to true if you want to auto approve the Private Endpoint of the AFD')
 param autoApproveAfdPrivateEndpoint bool = true
 
+@description('The name of the existing VNET Hub Private DNS Zone Resource Group')
+param privateDnsZoneRg string = ''
 
 
 // ================ //
@@ -218,6 +220,7 @@ module spoke 'deploy.spoke.bicep' = {
     subnetSpokeDevOpsAddressSpace: subnetSpokeDevOpsAddressSpace
     subnetSpokePrivateEndpointAddressSpace: subnetSpokePrivateEndpointAddressSpace
     vnetHubResourceId: empty(vnetHubResourceId) ? hub.outputs.vnetHubId : vnetHubResourceId
+    privateDnsZoneRg: privateDnsZoneRg
     webAppBaseOs: webAppBaseOs
     adminPassword: adminPassword
     adminUsername: adminUsername

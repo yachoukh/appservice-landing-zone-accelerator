@@ -40,12 +40,13 @@ param mysqlAdminPassword string
 @description('Provide Subnet ID')
 param subnetId string
 
-var privateDnsZoneRg = 'eu-LISA-PP-privatedns'
+@description('The name of the existing VNET Hub Private DNS Zone Resource Group')
+param privateDnsZoneRg string = ''
 
 module mysqlPrivateDnsZone '../../../shared/bicep/private-dns-zone.bicep' = {
   // condiotional scope is not working: https://github.com/Azure/bicep/issues/7367
   //scope: empty(vnetHubResourceId) ? resourceGroup() : resourceGroup(vnetHubSplitTokens[2], vnetHubSplitTokens[4]) 
-  scope: resourceGroup(vnetHubSplitTokens[2], privateDnsZoneRg)
+  scope: resourceGroup(vnetHubSplitTokens[2], !empty(privateDnsZoneRg) ? privateDnsZoneRg : vnetHubSplitTokens[4])
   name: take('${replace(mysqlDnsZoneName, '.', '-')}-PrivateDnsZoneDeployment', 64)
   params: {
     name: mysqlDnsZoneName
