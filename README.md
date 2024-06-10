@@ -1,31 +1,8 @@
-# App Service Landing Zone Accelerator
-
-This repository provides both enterprise architecture guidelines and a reference implementation for deploying Azure App Service solutions in multi-tenant and App Service Environment scenarios. It includes best practices, considerations, and deployable artifacts for implementing a common reference architecture.
-
-## Table of Contents
-
-- [App Service Landing Zone Accelerator](#app-service-landing-zone-accelerator)
-  - [Table of Contents](#table-of-contents)
-  - [Enterprise-Scale Architecture](#enterprise-scale-architecture)
-  - [Prerequisites](#prerequisites)
-  - [Getting Started](#getting-started)
-    - [Step 1. Reference implementations](#step-1-reference-implementations)
-    - [Step 2. Configure and test the deployment in your own environment](#step-2-configure-and-test-the-deployment-in-your-own-environment)
-      - [Deploy with Azure Portal (Bicep/ARM)](#deploy-with-azure-portal-biceparm)
-      - [Locally deploy with Bicep](#locally-deploy-with-bicep)
-    - [Step 3. Configure GitHub Actions](#step-3-configure-github-actions)
-    - [App Patterns](#app-patterns)
-  - [Got a feedback](#got-a-feedback)
-  - [Data Collection](#data-collection)
-    - [Telemetry Configuration](#telemetry-configuration)
-  - [Contributing](#contributing)
-  - [Trademarks](#trademarks)
-
-Visit [EnterpriseScale-AppService](https://aka.ms/EnterpriseScale-AppService) for more information.
-
-![image](/docs/Images/home-page.gif)
+# Multitenant App Service Secure Baseline - Bicep Implementation
 
 ## Enterprise-Scale Architecture
+
+![image](/docs/Images/AppServiceLandingZoneArchitecture-multitenant.png)
 
 The enterprise architecture is broken down into six different design areas, where you can find the links to each at:
 | Design Area|Considerations|Recommendations|
@@ -37,58 +14,21 @@ The enterprise architecture is broken down into six different design areas, wher
 | Security, Governance, and Compliance|[Design Considerations](/docs/Design-Areas/security-governance-compliance.md#design-considerations)|[Design Recommendations](/docs/Design-Areas/security-governance-compliance.md#design-recommendations)|
 | Application Automation and DevOps|[Design Considerations](/docs/Design-Areas/automation-devops.md#design-considerations)|[Design Recommendations](/docs/Design-Areas/automation-devops.md#design-recommendations)|
 
-## Prerequisites
+## Prerequisites 
+- Clone this repo
+- Install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
+- Install [bicep tools](https://docs.microsoft.com/azure/azure-resource-manager/bicep/install)
 
-Before you begin, ensure you have met the following requirements:
 
-- **Azure Subscription**: You need an Azure subscription to create resources in Azure. If you don't have one, you can create a [free account](https://azure.microsoft.com/free/).
 
-- **Azure CLI or Azure PowerShell**: You need either Azure CLI or Azure PowerShell installed and configured to interact with your Azure account. You can download them from [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and [here](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps) respectively.
-
-- **Terraform or Bicep**: Depending on your preference, you need either Terraform or Bicep installed to deploy the infrastructure. You can download Terraform from [here](https://www.terraform.io/downloads.html) and Bicep from [here](https://github.com/Azure/bicep#installing-bicep-cli).
-
-- **Knowledge of Azure App Service**: This project involves deploying and managing Azure App Service resources. Familiarity with Azure App Service and its concepts is recommended.
-
-Please replace the links and the software versions with the ones that are relevant to your project.
-
-## Getting Started
-
-Follow the steps below to get started with the App Service Landing Zone Accelerator.
-
-### Step 1. Reference implementations
-
-In this project, we currently have the following reference implementations:
-
-| Scenario | Description | Documentation | Pipeline Status |
-| -------- | ----------- | ------------- | --------------- |
-| :arrow_forward: [Scenario 1: App Service Secure Baseline Multi-Tenant](scenarios/secure-baseline-multitenant/README.md) | This scenario deploys a multi-tenant App Service environment with a Hub and Spoke network topology. | [README](scenarios/secure-baseline-multitenant/README.md) | [![Scenario 1: Terraform HUB Multi-tenant Secure Baseline](https://github.com/Azure/appservice-landing-zone-accelerator/actions/workflows/scenario1.terraform.hub.yml/badge.svg?branch=main)](https://github.com/Azure/appservice-landing-zone-accelerator/actions/workflows/scenario1.terraform.hub.yml) [![Scenario 1: Terraform SPOKE Multi-tenant Secure Baseline](https://github.com/Azure/appservice-landing-zone-accelerator/actions/workflows/scenario1.terraform.spoke.yml/badge.svg)](https://github.com/Azure/appservice-landing-zone-accelerator/actions/workflows/scenario1.terraform.spoke.yml) [![Scenario 1: Bicep Multi-Tenant ASEv3 Secure Baseline](https://github.com/Azure/appservice-landing-zone-accelerator/actions/workflows/ase-multitenant.bicep.yml/badge.svg?branch=main)](https://github.com/Azure/appservice-landing-zone-accelerator/actions/workflows/ase-multitenant.bicep.yml) |
-
-> **Note**  
-  Currently, the App Service Secure Baseline Multi-Tenant is the only reference implementation available. However, both the Terraform and Bicep configuration files have feature flags available to accommodate additional scenarios. More reference input files will be provided to accommodate additional reference implementations in the future.
-
-### Step 2. Configure and test the deployment in your own environment
-
-With the selected reference implementation, you can now choose between `Bicep` or `Terraform` to deploy the scenario's infrastructure.
-
-#### Deploy with Azure Portal (Bicep/ARM)
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazure%2Fappservice-landing-zone-accelerator%2Fmain%2Fscenarios%2Fsecure-baseline-multitenant%2Fazure-resource-manager%2Fmain.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fazure%2Fappservice-landing-zone-accelerator%2Fmain%2Fscenarios%2Fsecure-baseline-multitenant%2Fazure-resource-manager%2Fmain-portal-ux.json)
-
-#### Locally deploy with Bicep
-
-For additional information, view the Bicep README [here](scenarios/secure-baseline-multitenant/bicep/README.md).
-
-The Bicep configuration files are located in the [scenarios/secure-baseline-multitenant/bicep](scenarios/secure-baseline-multitenant/bicep/) directory.
-
-Before deploying the Bicep IaC artifacts, you need to review and customize the values of the parameters in the [main.parameters.jsonc](scenarios/secure-baseline-multitenant/bicep/main.parameters.jsonc) file.
+## Deploy the App Service Landing Zone Bicep code
+Before deploying the Bicep IaC artifacts, you need to review and customize the values of the parameters in the [main.parameters.jsonc](main.parameters.jsonc) file. 
 
 > **Note**  
   Azure Developer CLI (azd) is also supported as a deployment method. Since azd CLI does not support parameter files with *jsonc* extension, we provide a simple json parameter file (which does not contain inline comments)
 
-The expandable table below summarizes the available parameters and the possible values that can be set.
+The table below summarizes the available parameters and the possible values that can be set. 
 
-<details>
-<summary>Bicep Configuration Parameters Table</summary>
 
 | Name | Description | Example | 
 |------|-------------|---------|
@@ -97,7 +37,7 @@ The expandable table below summarizes the available parameters and the possible 
 |environment|Required. The name of the environment (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long.|dev|
 |deployAseV3|Optional, default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan.|false|
 |vnetHubResourceId|If empty, then a new hub will be created. If you select not to deploy a new Hub resource group, set the resource id of the Hub Virtual Network that you want to peer to. In that case, no new hub will be created and a peering will be created between the new spoke and and existing hub vnet|/subscriptions/<subscription_id>/ resourceGroups/<rg_name>/providers/ Microsoft.Network/virtualNetworks/<vnet_name>|
-|firewallInternalIp|If you select to create a new Hub, the UDR for locking the egress traffic will be created as well, no matter what value you set to that variable. However, if you select to connect to an existing hub, then you need to provide the internal IP of the azure firewal so that the deployment can create the UDR for locking down egress traffic. If not given, no UDR will be created||
+|firewallInternalIp|If you select to create a new Hub, the UDR for locking the egress traffic will be created as well, no matter what value you set to that variable. However, if you select to connect to an existing hub, then you need to provide the internal IP of the azure firewall so that the deployment can create the UDR for locking down egress traffic. If not given, no UDR will be created||
 |vnetHubAddressSpace|If you deploy a new hub, you need to set the appropriate CIDR of the newly created Hub virtual network|10.242.0.0/20|
 |subnetHubFirewallAddressSpace|CIDR of the subnet that will host the azure Firewall|10.242.0.0/26|
 |subnetHubFirewallManagementAddressSpace|CIDR to use for the AzureFirewallManagementSubnet, which is required by AzFW Basic|10.242.0.64/26|
@@ -106,7 +46,7 @@ The expandable table below summarizes the available parameters and the possible 
 |subnetSpokeAppSvcAddressSpace|CIDR of the subnet that will hold the app services plan. ATTENTION: If you deploy ASEv3 this CIDR should be x.x.x.x/24 |10.240.0.0/26 (*USE 10.240.0.0/24 if deployAseV3=true*)|
 |subnetSpokeDevOpsAddressSpace|CIDR of the subnet that will hold devOps agents etc|10.240.10.128/26|
 |subnetSpokePrivateEndpointAddressSpace|CIDR of the subnet that will hold the private endpoints of the supporting services|10.240.11.0/24|
-|webAppPlanSku|Defines the name, tier, size, family and capacity of the App Service Plan. Plans ending to _AZ, are deplying at least three instances in three Availability Zones. select one from: 'S1', 'S2', 'S3', 'P1V3', 'P2V3', 'P3V3', 'P1V3_AZ', 'P2V3_AZ', 'EP1', 'EP2', 'EP3', 'ASE_I1V2_AZ', 'ASE_I2V2_AZ', 'ASE_I3V2_AZ' ||
+|webAppPlanSku|Defines the name, tier, size, family and capacity of the App Service Plan. Plans ending to _AZ, are deploying at least three instances in three Availability Zones. select one from: 'S1', 'S2', 'S3', 'P1V3', 'P2V3', 'P3V3', 'P1V3_AZ', 'P2V3_AZ', 'EP1', 'EP2', 'EP3', 'ASE_I1V2_AZ', 'ASE_I2V2_AZ', 'ASE_I3V2_AZ', 'ASE_I1V2', 'ASE_I2V2', 'ASE_I3V2' ||
 |webAppBaseOs|The OS for the App service plan. Two options available: Windows or Linux||
 |resourceTags|Resource tags that we might need to add to all resources (i.e. Environment, Cost center, application name etc)|"resourceTags": {<br>         "value": { <br>               "deployment": "bicep", <br>  "key1": "value1" <br>           } <br>         } |
 |enableEgressLockdown|Feature Flag: te (or not) a UDR for the App Service Subnet, to route all egress traffic through Hub Azure Firewall|
@@ -114,89 +54,121 @@ The expandable table below summarizes the available parameters and the possible 
 |deployAzureSql|Feature Flag: Deploy (or not) an Azure SQL with default database|
 |deployAppConfig|Feature Flag: Deploy (or not) an Azure app configuration|
 |deployJumpHost|Feature Flag: Deploy (or not) an Azure virtual machine (to be used as jumphost)|
+|deployOpenAi|Feature Flag: Deploy (or not) an Azure OpenAI account. ATTENTION: At the time of writing, [OpenAI is in preview](https://learn.microsoft.com/azure/ai-services/openai/chatgpt-quickstart#prerequisites) and available in limited regions. |false
 |autoApproveAfdPrivateEndpoint|Default value: true. Set to true if you want to auto approve the Private Endpoint of the AFD Premium. See details [regarding approving the App Service private endpoint connection from Front Door](#approve-the-app-service-private-endpoint-connection-from-front-door-in-the-azure-portal) | false
 |sqlServerAdministrators|The Microsoft Entra ID administrator group used for SQL Server authentication.  The Microsoft Entra ID group must be created before running deployment. This has three values that need to be filled, as shown below <br> **login**: the name of the Microsoft Entra ID Group <br> **sid**: the object id  of the Microsoft Entra ID Group <br> **tenantId**: The tenantId of the Microsoft Entra ID ||
 
-</details>
-<details>
-<summary> Locally deploy with Terraform </summary>
-1. Ensure you are logged in to Azure CLI and have selected the correct subscription.
-1. Navigate to the Terraform deployment directory (same directory as the `main.tf` file).
-    - [scenarios/secure-baseline-multitenant/terraform/hub](scenarios/secure-baseline-multitenant/terraform/hub/)
-    - [scenarios/secure-baseline-multitenant/terraform/spoke](scenarios/secure-baseline-multitenant/terraform/spoke/)
-    > **Note**  
-    > The GitHub Action deployments for Terraform `hub` and `spoke` are currently separated due to the amount of time both components take to deploy. It is advised to use a self-hosted agent to ensure the deployment does not timeout.
-1. Familiarize yourself with the deployment files:
-    - `main.tf` - Contains the Terraform provider configurations for the selected deployment/module. Note the `backend "azurerm" {}` block as this configures your [Terraform deployment's remote state](https://developer.hashicorp.com/terraform/language/settings/backends/azurerm).  Also contains the resource group definitions to host the deployed resources.
-    - `_locals.tf` - Contains the local variable declarations as well as custom logic to support naming and tagging conventions across each module.
-    - `variables.tf` - Contains the input variable declarations for the selected deployment/module.
-    - `outputs.tf` - Contains the output variable declarations for the selected deployment/module.
-    - other `.tf` files - Contains groupings of resources for organizational purposes.
-    - `Parameters/uat.tfvars` - Reference input parameter file for the UAT environment.
-1. Navigate to the Terraform deployment directory (same directory as the `main.tf` file).
-1. Run `terraform init` to initialize the deployment.
-1. Run `terraform plan -var-file="Parameters/uat.tfvars"` to review the deployment plan.
-1. Run `terraform apply -var-file="Parameters/uat.tfvars"` to deploy the resources.
-</details>
+After the parameters have been initialized, you can deploy the Landing Zone Accelerator resources with the following `az cli` command:
 
-### Step 3. Configure GitHub Actions
+### Bash shell (i.e. inside WSL2 for windows 11, or any linux-based OS)
+``` bash
+location=northeurope # or any location that suits your needs
+deploymentName=bicepAppSvcLzaDeployment  # or any other value that suits your needs
 
-> **Note**  
-  The GitHub Actions pipelines are currently configured to deploy the Terraform `hub` and `spoke` deployments. The Bicep pipelines are currently in development.
+az deployment sub create \
+    --template-file main.bicep \
+    --location $location \
+    --name $deploymentName \
+    --parameters ./main.parameters.local.jsonc
+```
 
-GitHub Actions pipelines are located in the [`.github/workflows`](.github/workflows/) directory with templates stored in the [`.github/actions`](.github/actions/) directory.i
+### Powershell (windows based OS)
+``` powershell
+$location=northeurope # or any location that suits your needs
+$deploymentName=bicepAppSvcLzaDeployment  # or any other value that suits your needs
 
-1. Create an Microsoft Entra ID Service Principal for OIDC Authentication
-    - Reference the following documentation to configure your Microsoft Entra ID Service Principal: [OIDC authentication to Azure](https://learn.microsoft.com/en-us/azure/active-directory/saas-apps/github-enterprise-managed-user-oidc-provisioning-tutorial).
-1. Configure your GitHub Actions Secrets
-    - In your forked repository, navigate to `Settings > Secrets and variables > Actions`.
-    - Create the following secrets:
-      | Secret Name | Description | Example Value |
-      |-------------|-------------|---------------|
-      | `AZURE_CLIENT_ID` | GUID value for the Client ID of the service principal to authenticate with | `00000000-0000-0000-0000-000000000000` |
-      | `AZURE_SUBSCRIPTION_ID` | GUID value for the Subscription ID to deploy resources to | `00000000-0000-0000-0000-000000000000` |
-      | `AZURE_TENANT_ID` | GUID value for the Tenant ID of the service principal to authenticate with | `00000000-0000-0000-0000-000000000000` |
-      | `AZURE_TF_STATE_RESOURCE_GROUP_NAME` | [**Optional**] For Terraform only: override value to configure the remote state resource group name | `rg-terraform-state` |
-      | `AZURE_TF_STATE_STORAGE_ACCOUNT_NAME` | [**Optional**] For Terraform only: override value to configure the remote state storage account name | `tfstate` |
-      | `AZURE_TF_STATE_STORAGE_CONTAINER_NAME` | [**Optional**] For Terraform only: override value to configure the remote state storage container name | `tfstate` |
-      | `ACCOUNT_NAME` | [**Optional**] The Azure DevOps organization URL or GitHub Actions account name (see Example Value column) to use when provisioning the pipeline agent on the self-hosted DevOps Agent VM | `https://dev.azure.com/ORGNAME` OR `github.com/ORGUSERNAME` OR `none` |
-      | `PAT` | [**Optional**] Personal Access Token for the DevOps VM to leverage on provisioning the pipeline agent on the self-hosted DevOps Agent VM | `asdf1234567` |
+az deployment sub create `
+    --template-file main.bicep `
+    --location $location `
+    --name $deploymentName `
+    --parameters ./main.parameters.jsonc
+```
+### Azure Developer CLI (azd)
+1. [Install the Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd?tabs=localinstall%2Cwindows%2Cbrew%2Cdeb)
+2. Login to azure from your terminal. You can do this by running `azd auth login`. If no web browser is available or the web browser fails to open, you may force device code flow with  `azd auth login --use-device-code` 
+3. Run `azd up` in the correct folder (/scenarios/secure-baseline-multitenant). This will start the Azure infrastructure provisioning process. The first time you run it, you will be asked to give some information, i.e. environmentName, subscription ID etc
 
----
 
-### App Patterns
 
-Looking for developer-focused reference implementation? Check out Reliable Web Patterns for App Service.
+   
+### Approve the App Service private endpoint connection from Front Door in the Azure Portal
 
-:arrow_forward: [Reliable web app pattern for .NET](https://github.com/Azure/reliable-web-app-pattern-dotnet)
+The approval of the App Service private endpoint connection from Azure Front Door can be automated with the deployment, if you set the param `autoApproveAfdPrivateEndpoint` to `true`. If you do so then you need to know:
+- The automatic deployment uses the [deploymentScripts Resource](https://learn.microsoft.com/en-us/azure/templates/microsoft.resources/deploymentscripts?pivots=deployment-language-bicep). The deployment script service requires two supporting resources for script execution and troubleshooting: a storage account and a container instance. The two automatically-created supporting resources are usually deleted by the script service when the deployment script execution gets in a terminal state. You are billed for the supporting resources until they are deleted.
+- The deployment script resource is only available in the regions where Azure Container Instance is available, see [Azure Container Instances Availability by Region](https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?products=container-instances&regions=asia-pacific-east,asia-pacific-southeast,australia-central,australia-central-2,australia-east,australia-southeast,brazil-south,brazil-southeast,canada-central,canada-east,central-india,china-east,china-east-2,china-east-3,china-non-regional,china-north,china-north-2,china-north-3,europe-north,europe-west,france-central,france-south,germany-north,germany-west-central,japan-east,japan-west,korea-central,korea-south,norway-east,norway-west,qatar-central,south-africa-north,south-africa-west,south-india,sweden-central,sweden-south,switzerland-north,switzerland-west,uae-north,uae-central,united-kingdom-south,united-kingdom-west,us-central,us-dod-central,us-dod-east,us-east,us-east-2,us-north-central,us-south-central,us-west,us-west-2,us-west-3,us-west-central,usgov-arizona,usgov-non-regional,usgov-texas,usgov-virginia,west-india,poland-central)
+- A User Assigned Managed Identity will be created (with name *id-WORKLOADNAME-ENVIRONMENT-REGION-AfdApprovePe*) that it will be given Contributor role on the spoke resource group. This identity will be used to approve the Private Endpoint connection
 
----
+If before deployment you set the param `autoApproveAfdPrivateEndpoint` to `false` (because you want to manually approve the Private Endpoint) then you need to complete the next manual step to approve the private endpoint connection.
 
-## Got a feedback
+```bash
+# Update the resource group name to match the one used in the deployment of the webapp
+rg_name="rg-spoke-appsvclza1-dev-northeurope"
+webapp_ids=$(az webapp list -g $rg_name --query "[].id" -o tsv)
 
-Please leverage [issues](https://github.com/Azure/appservice-landing-zone-accelerator/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) if you have any feedback or request on how we can improve on this repository.
+# you might have more than one web apps, check for all of them if there are pending approvals
+for webapp_id in $webapp_ids; do
+    # there might be more than one pending connection per web app
+    fd_conn_ids=$(az network private-endpoint-connection list --id $webapp_id --query "[?properties.provisioningState == 'Pending'].id" -o tsv)
+    
+    for fd_conn_id in $fd_conn_ids; do
+        az network private-endpoint-connection approve --id "$fd_conn_id" --description "Approved"
+    done
+done
+```
 
----
+### Verify Deployment and Approval of Azure Front Door Private Endpoint Connection
+Go to the portal, find the spoke resource group you have just deployed, and identify the Azure Front Door resource (names starts with *afd-*). In the Overview page, find the URL named *Endpoint hostname*, copy it, and try it on a browser. If everything is successful then you should see a sample web app page with title *"Your web app is running and waiting for your content"*. If you get any errors verify that you have approved the private endpoint connection between Azure Front Door and the Web App. 
 
-## Data Collection
+### Connect to the Jumpbox VM (deployed in the spoke resource group)
 
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the repository. There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at [https://go.microsoft.com/fwlink/?LinkId=521839](https://go.microsoft.com/fwlink/?LinkId=521839). You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+You can connect to the jumpbox win 11 VM only through bastion. The default parameters deploy a Bastion in Standard SKU, with native client support enabled. The jumpbox VM is Microsoft Entra ID Joined by default. This means that you can connect to the jumpbox, either with the local user/password combination (azureuser is the default username) or with a valid Microsoft Entra ID account. In certain circumstances your organization may not allow the device to be enrolled. If the jumpbox VM is Microsoft Entra ID joined and properly intune enrolled, you can use native rdp client to connect by running the below Az CLI commands 
 
-### Telemetry Configuration
+From a PowerShell terminal, connect to the DevOps VM using your Microsoft Entra ID credentials (or Windows Hello). 
 
-Telemetry collection is on by default.
+```powershell
+az upgrade
 
-To opt-out, set the variable enableTelemetry to `false` in Bicep/ARM file and disable_terraform_partner_id to `false` on Terraform files.
+az login
+az account list
+az account set --subscription "<subscription ID>"
 
----
+az network bastion rdp --name bast-bastion --resource-group rg-hub --target-resource-id /subscriptions/{subscription-id}/resourceGroups/{rg-name}/providers/Microsoft.Compute/virtualMachines/{vm-name} --disable-gateway
+```
 
-## Contributing
+More  details on how to [connect to a windows VM with native rdp client, can be found here](https://learn.microsoft.com/en-us/azure/bastion/connect-native-client-windows#connect-windows)
 
-See more at [Contributing](CONTRIBUTING.md)
+The Microsoft Entra ID enrollment can take a few minutes to complete. Check: [https://portal.manage-beta.microsoft.com/devices](https://portal.manage-beta.microsoft.com/devices)
 
-## Trademarks
+If your organization requires device enrollment before accessing corporate resources (i.e. if you see an error "You can't get there from here." or "This device does not meet your organization's compliance requirements"),login to the VM with local user (i.e. azureuser) and enroll the Jumpbox to Microsoft Entra ID by following the steps in Edge: 
+- open Edge and click "Sign in to sync data", 
+- select "Work or school account", 
+- and then press OK on "Allow my organization to manage my device". 
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
+It takes a few minutes for the policies to be applied, device scanned and confirmed as secure to access corporate resources. You will know that the process is complete.
 
-Any use of third-party trademarks or logos are subject to those third-party's policies.
+If you experience issues connecting to the DevOps VM using your Microsoft Entra ID credentials, see [Unable to connect to DevOps VM using Microsoft Entra ID credentials](../terraform/README.md#unable-to-connect-to-devops-vm-using-microsoft-entra-id-credentials)
+
+Once completed, and if you provided a valid (Microsoft Entra ID) administrator group used for SQL Server authentication (and not only local SQL user administrator), you should be able to connect to the SQL Server using the Microsoft Entra ID account from SQL Server Management Studio. On the sample database (sample-db by default), run the following commands to create the user and grant minimal permissions:
+
+```sql
+CREATE USER [web-app-name] FROM EXTERNAL PROVIDER;
+ALTER ROLE db_datareader ADD MEMBER [web-app-name];
+ALTER ROLE db_datawriter ADD MEMBER [web-app-name];
+ALTER ROLE db_ddladmin ADD MEMBER [web-app-name];
+GO
+
+CREATE USER [web-app-name/slots/slot-name] FROM EXTERNAL PROVIDER;
+ALTER ROLE db_datareader ADD MEMBER [web-app-name/slots/slot-name];
+ALTER ROLE db_datawriter ADD MEMBER [web-app-name/slots/slot-name];
+ALTER ROLE db_ddladmin ADD MEMBER [web-app-name/slots/slot-name];
+GO
+```
+#### :broom: Clean up resources
+
+If you used Azure Developer CLI to provision the LZA you can clean up everything by executing ` azd down`. 
+Otherwise  use the following commands to remove the resources you created.
+
+```bash
+az group delete -n <your-spoke-resource-group>
+az group delete -n <your-hub-resource-group>
+```
